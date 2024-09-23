@@ -1,4 +1,4 @@
-import { generateProjectsHead , generateProjects } from "./works" ;
+import { generateProjectsHead , generateProjects } from "./works.js" ;
 
 
 // const backEnd_URL = ""
@@ -13,14 +13,51 @@ const main = document.querySelector("main");
 
  function generateMainPage() {
     //appel de la fonction
+
     generateIntroduction();
     generateProjectsHead();
     generateProjects(projects);
     generateContactForm();
+    
 }
 
 generateMainPage();
 
+// const localStorage = window.localStorage.getItem("userData"); 
+// //appel du local storage pour voir que l'ont est bien connecté
+// if (localStorage){
+//     console.log('lo');
+//     const filter = document.querySelector("#filtres-container");
+//     filter.style.display = "none";
+    
+// // Cibler l'élément <nav> actuel
+// const nav = document.querySelector("#nav");
+//  // Création d'un nouvel élément <nav> avec le menu pour l'utilisateur connecté
+//  const entete = document.createElement("nav");
+//  entete.innerHTML = `
+//      <ul>
+//          <li><a href="portfolio">projets</a></li>
+//          <li><a href="contact">contact</a></li>
+//          <li><a href="index.html">logout</a></li>
+//          <li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+//      </ul>
+//  `;
+ // Remplacer l'élément <nav> existant par la nouvelle navigation
+//  nav.replaceWith(entete);
+// Ajouter un gestionnaire d'événement pour le logout
+// const logoutLink = document.querySelector("#logout");
+// logoutLink.addEventListener("click", function(event) {
+//     event.preventDefault(); // Empêche le comportement par défaut du lien
+//     // Supprimer les données du localStorage à la déconnexion
+//     window.localStorage.removeItem("userData");
+//     window.location.href = "login.html";
+// });
+
+
+// }
+// else{
+//     console.log('toto');
+// } 
 
 
 

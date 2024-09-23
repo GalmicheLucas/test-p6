@@ -29,7 +29,7 @@ form.addEventListener("submit", (event) => { // Attache un gestionnaire d'évén
       body: JSON.stringify(loginData), 
   })
   .then((response) => { // Gère la réponse de la requête fetch
-
+    console.log('toto');
       // Vérification de la réponse du serveur
       if (!response.ok) { // Si la réponse n'est pas OK (par exemple, si le statut HTTP est autre que  2xx)
           // Si la réponse n'est pas ok, retourner une promesse rejetée avec une erreur
@@ -40,10 +40,12 @@ form.addEventListener("submit", (event) => { // Attache un gestionnaire d'évén
   })
   .then((data) => { // données de la réponse
       const userId = data.userId; 
+      console.log(userId);
       const userToken = data.token; 
       //  informations dans sessionStorage
-      sessionStorage.setItem("token", userToken); // Stocke le token dans sessionStorage
-      sessionStorage.setItem("userId", userId); // Stocke l'identifiant de l'utilisateur dans sessionStorage
+      window.localStorage.setItem('userData', JSON.stringify(data));
+    //   window.localStorage.setItem("token", userToken); // Stocke le token dans sessionStorage
+    //   window.localStorage.setItem("userId", userId); // Stocke l'identifiant de l'utilisateur dans sessionStorage
       // Redirige vers index.html
       location.href = "index.html"; 
   })
