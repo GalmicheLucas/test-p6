@@ -126,8 +126,8 @@ li:hover {
 	margin-bottom: 1em;
 }
 
- #filtres-container{
-	width: 70%;
+#filtres-container{
+	width: 65%;
 	display: flex;
 	justify-content: space-evenly;
 	margin:60px auto
@@ -289,66 +289,26 @@ margin: auto;
 
 /* Mode editon */
 
-.editionMode{
-    
-    display: flex;
-    justify-content: center;
-    padding: 25px;
-    color: white;
-    background: black;
-}
-
-
-
-
-.editionMode.hidden{
-	display: none;
-}
-
-.editionMode h2{
-	font-family: 'Work Sans';
-	font-weight: 400;
-	font-size: 18px;
+.edit{
+	background-color: black;
 	color: white;
-	margin-left: 10px;
-}
-.fa-pen-to-square{
-	padding-top: 3px;
-}
-
-
-#modifySection {
-    display: flex;
-    align-items: center;
-    margin-left: 15px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50px;
+	width: 100vw; /*pour avoir la largeur completete*/
+	position: absolute;
+	left: 0;
+	top: 0;
 }
 
-#modifySection.hidden {
-    display: none;
+.projet-edition{
+	display: flex;
+	justify-content: center;
 }
 
-#modifySection h2 {
-    font-size: 15px;
-    font-weight: 400;
-    font-family: 'Work Sans';
-    color: black;
-    margin-left: 10px;
-	margin-bottom: 0;
-	cursor: pointer;
-}
-
-.fa-pen-to-square {
-	cursor: pointer;
-    padding-bottom: 5px;
-}
-
-.project-header {
+.modification{
+	color: black;
+	font-size: 13px;
 	
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#portfolio .project-header h2{
-	margin-bottom: 0;
 }

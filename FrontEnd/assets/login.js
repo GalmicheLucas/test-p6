@@ -5,7 +5,7 @@ const form = document.querySelector("form");
 const errorMessage = document.querySelector("#login p"); // Sélectionne le paragraphe d'erreur dans l'élément avec l'ID login
 
 // Ajout d'un écouteur d'événement au formulaire
-form.addEventListener("submit", (event) => { // Attache un gestionnaire d'événements qui répondra à l'événement submit du formulaire
+form.addEventListener("submit", async (event) => { // Attache un gestionnaire d'événements qui répondra à l'événement submit du formulaire
     
   // Prévention de l'action par défaut du formulaire (rechargement de la page)
   event.preventDefault(); // Empêche le rechargement de la page
@@ -21,7 +21,7 @@ form.addEventListener("submit", (event) => { // Attache un gestionnaire d'évén
   };
 
   // Envoi de la requête à l'API avec fetch
-  fetch("http://localhost:5678/api/users/login", { 
+ await fetch("http://localhost:5678/api/users/login", { 
       method: "POST", 
       headers: {
           "Content-Type": "application/json", 
@@ -44,8 +44,9 @@ form.addEventListener("submit", (event) => { // Attache un gestionnaire d'évén
       const userToken = data.token; 
       //  informations dans sessionStorage
       window.localStorage.setItem('userData', JSON.stringify(data));
-    //   window.localStorage.setItem("token", userToken); // Stocke le token dans sessionStorage
-    //   window.localStorage.setItem("userId", userId); // Stocke l'identifiant de l'utilisateur dans sessionStorage
+    //    window.localStorage.setItem("token", userToken); // Stocke le token dans sessionStorage
+    //    window.localStorage.setItem("userId", userId); // Stocke l'identifiant de l'utilisateur dans sessionStorage
+
       // Redirige vers index.html
       location.href = "index.html"; 
   })

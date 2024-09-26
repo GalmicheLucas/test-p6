@@ -22,7 +22,7 @@ export function generateProjectsHead() {
     const projectSection = document.createElement("section");
     projectSection.id = "portfolio";
     projectSection.innerHTML = `
-        <h2>Mes projets</h2>
+        <h2 id="projets">Mes projets</h2>
         <div id="filtres-container">
             <button id="0" class="filtre-cat">Tous</button>
         </div>
