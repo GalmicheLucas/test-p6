@@ -37,34 +37,32 @@ if (localStorage) {
     filter.style.display = "none";
   }
 
- 
+ const logout = document.createElement("li");
+ logout.innerText = 'logout';
+ logout.className = 'logout';
 
   // Cibler l'élément <nav> actuel
   const nav = document.querySelector("#nav");
 
   // Création d'un nouvel élément <nav> avec le menu pour l'utilisateur connecté
-  const entete = document.createElement("nav");
-  entete.innerHTML = `
-        <ul>
-            <li><a href="#portfolio">projets</a></li>
-            <li><a href="#contact">contact</a></li>
-            <li><a id="logout" href="#">logout</a></li>
-            <li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
-        </ul>
-    `;
-  // Remplacer l'élément <nav> existant par la nouvelle navigation
-  nav.replaceWith(entete);
+  const ul = document.querySelector("#nav ul");
+  const listLi = ul.getElementsByTagName("li"); // recuperation des Li 
+  console.log(listLi);
+  const lastLi = listLi[listLi.length - 1];
+  lastLi.insertAdjacentElement("beforebegin", logout);
 
-  // Gestion du logout : Sélectionner le bouton de logout depuis l'élément nouvellement inséré
-  const logoutButton = entete.querySelector("#logout");
 
   // Ajouter un gestionnaire d'événement pour le logout
-  logoutButton.addEventListener("click", function (event) {
+  logout.addEventListener("click", function (event) {
     event.preventDefault();
     // Supprimer correctement les données de l'utilisateur
     window.localStorage.removeItem("userData"); // Supprimer les données du localStorage
     window.location.href = "index.html"; // Rediriger vers la page de connexion
   });
+
+  //
+  const loginLi = ul.querySelector("li:nth-child(3)");// recuperation du li numero 3 "login"
+  loginLi.style.display = "none";
 
   // Cibler l'élément <section> actuel
 const section = document.querySelector("#projets"); 
@@ -74,10 +72,9 @@ const projects = document.createElement("section");
 projects.id = "portfolio"; // Utilisation de 'projects' comme ID
 projects.className = "projet-edition";
 projects.innerHTML = `
- <h2>
-        Mes projets
-        <i class="fa-regular fa-pen-to-square  modification">modifier</i>
-    </h2>`;
+ <h2> Mes projets</h2>
+        <div class="projets"><i class="fa-regular fa-pen-to-square edition"></i><p class="modification">modifier</p></div>
+    `;
 // Remplacer l'élément <section> existant par la nouvelle section
 section.replaceWith(projects); 
 

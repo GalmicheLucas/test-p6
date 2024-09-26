@@ -306,9 +306,15 @@ margin: auto;
 	display: flex;
 	justify-content: center;
 }
-
+.projets {
+	display: flex;
+}
 .modification{
 	color: black;
 	font-size: 13px;
-	
+	font-family: 'Syne';
+}
+.edition{
+	color: black;
+	font-size: 13px;
 }
