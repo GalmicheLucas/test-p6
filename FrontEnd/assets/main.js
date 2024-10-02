@@ -73,10 +73,71 @@ projects.id = "portfolio"; // Utilisation de 'projects' comme ID
 projects.className = "projet-edition";
 projects.innerHTML = `
  <h2> Mes projets</h2>
-        <div class="projets"><i class="fa-regular fa-pen-to-square edition"></i><p class="modification">modifier</p></div>
-    `;
+ <div class="projets">
+   <i class="fa-regular fa-pen-to-square edition"></i>
+   <p class="modification" id="edit-projects-button">modifier</p>
+ </div>
+`;
+
 // Remplacer l'élément <section> existant par la nouvelle section
-section.replaceWith(projects); 
+section.replaceWith(projects);
+
+// Rendre le bouton "modifier" actif pour ouvrir la modale
+const editButton = document.querySelector("#edit-projects-button");
+editButton.addEventListener("click", function () {
+  generateModal(); // Appelle la fonction pour afficher la modale
+}); 
+
+function generateModal() {
+  // Création de l'overlay de la modale
+  const modalOverlay = document.createElement("div");
+  modalOverlay.className = "modal-overlay";
+  
+  const modal = document.createElement("div");
+  modal.className = "modal";
+  
+  // En-tête de la modale avec le titre centré
+  const modalHeader = document.createElement("div");
+  modalHeader.className = "modal-header";
+  modalHeader.innerHTML = `
+    <h2 style="text-align: center; width: 100%;">Galerie d'images</h2>
+    <span class="close-modal" style="cursor: pointer;">&times;</span>
+  `;
+
+  // Corps de la modale
+  const modalBody = document.createElement("div");
+  modalBody.className = "modal-body";
+  
+  // (Contenu de la modale : Galerie d'images et bouton "Ajouter" ici)
+  const addImageButton = document.createElement("button");
+  addImageButton.className = "add-image-button";
+  addImageButton.innerText = "Ajouter une photo";
+  
+  modalBody.appendChild(addImageButton);
+
+  // Ajout des sections dans la modale
+  modal.appendChild(modalHeader);
+  modal.appendChild(modalBody);
+  modalOverlay.appendChild(modal);
+  document.body.appendChild(modalOverlay);
+
+  // Événement pour fermer la modale via la croix
+  const closeModalBtn = modalHeader.querySelector(".close-modal");
+  closeModalBtn.addEventListener("click", () => {
+    modalOverlay.remove(); // Ferme la modale
+  });
+
+  // Événement pour fermer la modale en cliquant sur l'overlay
+  modalOverlay.addEventListener("click", (event) => {
+    if (event.target === modalOverlay) {  // Vérifie si le clic est sur l'overlay
+      modalOverlay.remove(); // Ferme la modale
+    }
+  });
+}
+
+
+
+
 
 } else {
   console.log("Utilisateur non connecté");
@@ -135,3 +196,6 @@ function generateContactForm() {
   contactSection.appendChild(form);
   main.appendChild(contactSection);
 }
+
+
+
