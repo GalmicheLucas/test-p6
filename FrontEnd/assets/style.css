@@ -314,9 +314,13 @@ margin: auto;
     align-items: center; /* Assure l'alignement vertical dans ce conteneur */
 }
 
+.fa-pen-to-square{
+	margin-right: 10px;
+}
+
 .projets {
     display: flex;
-    align-items: center; /* Aligne l'icône et le texte verticalement */
+    align-items: baseline; /* Aligne l'icône et le texte verticalement */
     margin-left: 10px; /* Ajuste selon l'espace souhaité */
 }
 
@@ -406,11 +410,19 @@ margin: auto;
 	padding: 5px;
 	cursor: pointer;
   }
-  
+
+  .modal-body{
+	display: flex;
+	justify-content: center;
+  }
+
   .add-image-button {
+	width: 50%;
+	border-radius: 25px;
 	margin-top: 20px;
 	padding: 10px;
-	background-color: #4caf50;
+	background-color: #1D6154;
+	font-family: 'Syne';
 	color: white;
 	border: none;
 	cursor: pointer;

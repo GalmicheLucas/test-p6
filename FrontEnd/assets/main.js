@@ -71,9 +71,9 @@ const section = document.querySelector("#projets");
 const projects = document.createElement("section");
 projects.id = "portfolio"; // Utilisation de 'projects' comme ID
 projects.className = "projet-edition";
-projects.innerHTML = `
+projects.innerHTML = ` <div class="projets">
  <h2> Mes projets</h2>
- <div class="projets">
+
    <i class="fa-regular fa-pen-to-square edition"></i>
    <p class="modification" id="edit-projects-button">modifier</p>
  </div>
@@ -95,19 +95,32 @@ function generateModal() {
   
   const modal = document.createElement("div");
   modal.className = "modal";
-  
+  modal.innerHTML =  ` `
   // En-tête de la modale avec le titre centré
   const modalHeader = document.createElement("div");
   modalHeader.className = "modal-header";
   modalHeader.innerHTML = `
-    <h2 style="text-align: center; width: 100%;">Galerie d'images</h2>
+    <p style="text-align: center; width: 100%; font-family: work sans; color: black; font-weight: 400; font-size: 25px;">Galerie d'images</p><hr>
     <span class="close-modal" style="cursor: pointer;">&times;</span>
+     
   `;
 
   // Corps de la modale
+ 
   const modalBody = document.createElement("div");
   modalBody.className = "modal-body";
   
+//   projects.forEach(project => {
+//     const modalProject = document.querySelector(".modal-body");
+//     const projectTitle = document.createElement("figure");
+//     projectTitle.dataset.id = project.id;
+//     projectTitle.dataset.cat = project.categoryId;
+
+//   modalBody.innerHTML =  ` <img src="${project.imageUrl}" alt="${project.title}">
+//   <figcaption>${project.title}</figcaption>
+// `;
+// })
+
   // (Contenu de la modale : Galerie d'images et bouton "Ajouter" ici)
   const addImageButton = document.createElement("button");
   addImageButton.className = "add-image-button";
