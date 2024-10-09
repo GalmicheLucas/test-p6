@@ -383,11 +383,7 @@ margin: auto;
 	margin-bottom: 15px;
   }
   
-  .image-list {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-	gap: 10px;
-  }
+
   
   .image-item {
 	display: flex;
@@ -412,9 +408,20 @@ margin: auto;
   }
 
   .modal-body{
-	display: flex;
-	justify-content: center;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+	gap: 10px;
   }
+
+ .modale-img img{
+	width: 100px;
+ }
+
+ .button-container {
+    display: flex;
+    justify-content: center; /* Centre le bouton horizontalement */
+    margin-top: 20px; /* Ajuste la marge selon tes besoins */
+}
 
   .add-image-button {
 	width: 50%;
