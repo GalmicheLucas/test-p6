@@ -1,5 +1,5 @@
 import { generateProjectsHead, generateProjects } from "./works.js";
-import { generateModal } from "./modal.js";
+import { generateModal, modalAdd } from "./modal.js";
 
 // const backEnd_URL = ""
 
@@ -21,6 +21,7 @@ function generateMainPage() {
 generateMainPage();
 
 const localStorage = window.localStorage.getItem("userData");
+console.log(localStorage);
 // Vérifier si l'utilisateur est connecté
 if (localStorage) {
   console.log("Utilisateur connecté");
