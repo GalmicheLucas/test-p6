@@ -40,7 +40,6 @@ export function generateModal() {
                     <img src="${project.imageUrl}" alt="${project.title}" style="width: 100%; display: block;">
                     <i id="trash-${project.id}" type="button" class="fa-solid fa-trash-can trash-icon"></i>
                 </div>
-                <div class="separator"></div>
             `;
       modalBody.appendChild(worksTile);
 
@@ -49,31 +48,7 @@ export function generateModal() {
       const trashIcon = worksTile.querySelector(`#trash-${project.id}`);
       trashIcon.addEventListener("click",  () => {
         console.log(project.id);
-        // try {
-        //     const response = await fetch(
-        //       `http://localhost:5678/api/works/${project.id}`,
-        //       {
-        //         method: "DELETE",
-        //         headers: {
-        //           Authorization: `Bearer ${localStorage.token}`,
-        //           Accept: "application/json",
-        //         },
-        //       }
-        //     );
-
-        //     if (response.ok) {
-        //       console.log(`Projet avec l'ID ${project.id} supprimé avec succès.`);
-        //       // Supprimer l'élément du DOM après une suppression réussie
-        //       worksTile.remove();
-        //     } else {
-        //       console.error(
-        //         `Erreur lors de la suppression du projet : ${response.status}`
-        //       );
-        //     }
-        //   } catch (error) {
-        //     console.error(`Erreur de la requête : ${error}`);
-        //   }
-        // });
+        
 
         const url = `http://localhost:5678/api/works/${project.id}`;
         const token = JSON.parse(window.localStorage.getItem("userData")).token;
@@ -115,6 +90,10 @@ export function generateModal() {
   modalOverlay.appendChild(modal);
   document.body.appendChild(modalOverlay);
 
+const separator = document.createElement("div");
+separator.className = "separator";
+modal.appendChild(separator);
+
   // Création du conteneur pour le bouton "Ajouter une photo"
   const buttonContainer = document.createElement("div");
   buttonContainer.className = "button-container";
@@ -145,8 +124,10 @@ export function generateModal() {
 
 export function modalAdd() {
   const modalOverlay = document.querySelector(".modal");
+  
   if (modalOverlay) {
     modalOverlay.innerHTML = `
+   
       <div>
           <i id="modal-back" class="fa-solid fa-arrow-left"></i><i id="closingX" class="fa-solid fa-xmark"></i>
       </div>
@@ -159,6 +140,7 @@ export function modalAdd() {
               <div id="img-preview-area"> 
                   <img id="show-img-preview" style="display:none;">
               </div>
+              <div class="upload-section">
               <i class="fa-regular fa-image img"></i>
               <label for="upload-img-html" id="upload-img">Choisir une image</label>
               <input type="file" id="upload-img-html" name="image">
@@ -177,7 +159,8 @@ export function modalAdd() {
           </select>
           <div class="separator"></div>
          <div class="btn-modal"> <button id="modale-add-btn" class="main-btn btn-add-project unfilled">Valider</button></div>
-      </form>`;
+      </form>
+      `;
 
     // Ajouter ici l'écouteur d'événement pour la soumission du formulaire
     const formulaire = document.querySelector("#form-ajout-photo");
@@ -224,10 +207,47 @@ export function modalAdd() {
           alert("Une erreur est survenue lors de l'ajout du projet.");
         }
       });
-    } else {
-      console.error(
-        "Le formulaire avec l'ID 'form-ajout-photo' est introuvable."
-      );
-    }
+
+      // Vérification de la validité du formulaire pour activer le bouton Valider
+      const fileInput = document.querySelector("#upload-img-html");
+      const imgPreview = document.querySelector("#show-img-preview");
+const uploadSection = document.querySelector(".upload-section");
+      const titleInput = document.querySelector("#new-project");
+      const validateButton = document.querySelector("#modale-add-btn");
+
+
+// Fonction pour afficher l'aperçu de l'image
+function showImagePreview(event) {
+  const file = event.target.files[0];
+  if (file) {
+    console.log("Selected file:", file); // Debug: Log the selected file
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      imgPreview.src = e.target.result; // Set the image source
+      imgPreview.style.display = "block"; // Display the image preview
+      uploadSection.classList.add("hidden"); // Hide the upload section
+      console.log("Image preview source set"); // Debug: Log image setting
+    };
+    reader.readAsDataURL(file); // Read the file as a data URL
   }
 }
+
+
+// Fonction pour vérifier la validité du formulaire
+function checkFormValidity() {
+  if (fileInput.files.length > 0 && titleInput.value.trim() !== "") {
+      validateButton.classList.add("active");
+      validateButton.disabled = false; // Activer le bouton
+  } else {
+      validateButton.classList.remove("active");
+      validateButton.disabled = true; // Désactiver le bouton
+  }
+}
+
+// Ajouter un écouteur d'événements sur l'input de type file pour déclencher l'aperçu
+fileInput.addEventListener("change", showImagePreview);
+fileInput.addEventListener("change", checkFormValidity);
+titleInput.addEventListener("input", checkFormValidity);
+
+}
+}}
