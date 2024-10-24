@@ -549,6 +549,10 @@ margin: auto;
 	justify-content: center;
 }
 
+#show-img-preview {
+	max-width: 400px;
+}
+
 .upload-section {
     background-color:#E8F1F6;
     border: 2px dashed #cccccc;
@@ -592,13 +596,11 @@ margin: auto;
 /* Champs de texte */
 #new-project,
 #modale-categorie-add {
-    width: 100%;
-    padding: 12px;
+    width: 420px;
+	padding: 8px 0px 8px 0px;
     margin: 15px 0;
     border: 1px solid #cccccc;
-    border-radius: 5px;
     font-size: 16px;
-    background-color: #f9f9f9;
 }
 
 #new-project:focus,

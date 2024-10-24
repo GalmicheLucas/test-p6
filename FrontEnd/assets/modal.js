@@ -46,9 +46,8 @@ export function generateModal() {
       // Ajout de l'event listener sur l'icône de la corbeille après la création de l'élément
       const localStorage = window.localStorage.getItem("userData");
       const trashIcon = worksTile.querySelector(`#trash-${project.id}`);
-      trashIcon.addEventListener("click",  () => {
+      trashIcon.addEventListener("click", () => {
         console.log(project.id);
-        
 
         const url = `http://localhost:5678/api/works/${project.id}`;
         const token = JSON.parse(window.localStorage.getItem("userData")).token;
@@ -90,9 +89,9 @@ export function generateModal() {
   modalOverlay.appendChild(modal);
   document.body.appendChild(modalOverlay);
 
-const separator = document.createElement("div");
-separator.className = "separator";
-modal.appendChild(separator);
+  const separator = document.createElement("div");
+  separator.className = "separator";
+  modal.appendChild(separator);
 
   // Création du conteneur pour le bouton "Ajouter une photo"
   const buttonContainer = document.createElement("div");
@@ -110,6 +109,7 @@ modal.appendChild(separator);
 
   // Événement pour fermer la modale via la croix
   const closeModalBtn = modalHeader.querySelector(".close-modal");
+  console.log("test");
   closeModalBtn.addEventListener("click", () => {
     modalOverlay.remove(); // Ferme la modale
   });
@@ -124,7 +124,7 @@ modal.appendChild(separator);
 
 export function modalAdd() {
   const modalOverlay = document.querySelector(".modal");
-  
+
   if (modalOverlay) {
     modalOverlay.innerHTML = `
    
@@ -150,6 +150,7 @@ export function modalAdd() {
           <input type="text" id="new-project" placeholder="">
           <label for="categorie">Catégorie</label>
           <select id="modale-categorie-add">
+          <option></option>
               ${categories
                 .map(
                   (category) =>
@@ -187,67 +188,90 @@ export function modalAdd() {
         );
 
         try {
+          const token = JSON.parse(window.localStorage.getItem("userData")).token;
           const response = await fetch("http://localhost:5678/api/works", {
             method: "POST",
             body: formData,
             headers: {
-              Authorization: `Bearer ${localStorage.tokenID}`,
+              Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           });
 
           if (response.ok) {
             alert("Projet ajouté avec succès");
+            console.log("Réponse réussie : ", await response.json());
             generateModal(); // Actualise la vue après ajout
           } else {
-            alert("Le projet n'a pas pu être ajouté");
+            console.error("Erreur lors de la requête POST : ", response.status);
+            alert("Le projet n'a pas pu être ajouté.");
           }
         } catch (error) {
-          console.error("Erreur lors de l'ajout du projet :", error);
+          console.error("Erreur lors de l'ajout du projet : ", error);
           alert("Une erreur est survenue lors de l'ajout du projet.");
         }
       });
+      
+
+      const Modalclose = () =>
+        document.querySelector(".modal-overlay").remove();
+      document.querySelector("#closingX").addEventListener("click", Modalclose);
+
+    const Goback = () =>
+      document.querySelector("#modal-back").addEventListener("click", generateModal);
 
       // Vérification de la validité du formulaire pour activer le bouton Valider
       const fileInput = document.querySelector("#upload-img-html");
       const imgPreview = document.querySelector("#show-img-preview");
-const uploadSection = document.querySelector(".upload-section");
+      const uploadSection = document.querySelector(".upload-section");
       const titleInput = document.querySelector("#new-project");
       const validateButton = document.querySelector("#modale-add-btn");
 
+      // Fonction pour afficher l'aperçu de l'image
+      function showImagePreview(event) {
+        const file = event.target.files[0];
+        if (file) {
+          console.log("Fichier sélectionné : ", file); // Ajout de log pour vérifier le fichier
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            imgPreview.src = e.target.result;
+            imgPreview.style.display = "block";
+            uploadSection.classList.add("hidden");
+            console.log("Aperçu de l'image généré avec succès");
+          };
+          reader.readAsDataURL(file); // Lire le fichier comme URL de données
+        }
+      }
+      
 
-// Fonction pour afficher l'aperçu de l'image
-function showImagePreview(event) {
-  const file = event.target.files[0];
-  if (file) {
-    console.log("Selected file:", file); // Debug: Log the selected file
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      imgPreview.src = e.target.result; // Set the image source
-      imgPreview.style.display = "block"; // Display the image preview
-      uploadSection.classList.add("hidden"); // Hide the upload section
-      console.log("Image preview source set"); // Debug: Log image setting
-    };
-    reader.readAsDataURL(file); // Read the file as a data URL
+      /// Fonction pour vérifier la validité du formulaire
+      function checkFormValidity() {
+        const categorySelect = document.querySelector("#modale-categorie-add");
+        const isFormValid =
+          fileInput.files.length > 0 &&
+          titleInput.value.trim() !== "" &&
+          categorySelect.value.trim() !== "";
+      
+        console.log("Formulaire valide : ", isFormValid); // Vérification de la validité du formulaire
+      
+        if (isFormValid) {
+          validateButton.classList.add("active");
+          validateButton.disabled = false;
+        } else {
+          validateButton.classList.remove("active");
+          validateButton.disabled = true;
+        }
+      }
+      
+
+      // Ajouter un écouteur d'événement sur la sélection de la catégorie
+      const categorySelect = document.querySelector("#modale-categorie-add");
+      categorySelect.addEventListener("change", checkFormValidity);
+
+      // Ajouter un écouteur d'événements sur l'input de type file pour déclencher l'aperçu
+      fileInput.addEventListener("change", showImagePreview);
+      fileInput.addEventListener("change", checkFormValidity);
+      titleInput.addEventListener("input", checkFormValidity);
+    }
   }
 }
-
-
-// Fonction pour vérifier la validité du formulaire
-function checkFormValidity() {
-  if (fileInput.files.length > 0 && titleInput.value.trim() !== "") {
-      validateButton.classList.add("active");
-      validateButton.disabled = false; // Activer le bouton
-  } else {
-      validateButton.classList.remove("active");
-      validateButton.disabled = true; // Désactiver le bouton
-  }
-}
-
-// Ajouter un écouteur d'événements sur l'input de type file pour déclencher l'aperçu
-fileInput.addEventListener("change", showImagePreview);
-fileInput.addEventListener("change", checkFormValidity);
-titleInput.addEventListener("input", checkFormValidity);
-
-}
-}}
