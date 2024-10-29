@@ -33,6 +33,11 @@ if (localStorage) {
     '<p><i class="fa-regular fa-pen-to-square"></i>Mode édition</p>';
   document.body.prepend(editBanner);
 
+// Ajouter l'événement de clic pour ouvrir la modale
+editBanner.addEventListener("click", function () {
+  generateModal(); // Ouvre la modale en cliquant sur la bannière d'édition
+});
+
   // Cacher le filtre si l'utilisateur est connecté
   const filter = document.querySelector("#filtres-container");
   if (filter) {
