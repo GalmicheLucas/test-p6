@@ -596,8 +596,10 @@ margin: auto;
 /* Champs de texte */
 #new-project,
 #modale-categorie-add {
+	font-family: 'work sans';
+	color: #444444;
     width: 420px;
-	padding: 8px 0px 8px 0px;
+	padding: 8px ;
     margin: 15px 0;
     border: 1px solid #cccccc;
     font-size: 16px;

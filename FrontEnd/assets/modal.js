@@ -1,20 +1,74 @@
-// Récupération des catégories depuis l'API
+// Récupération des catégories depuis l'API 
 const catApi = await fetch("http://localhost:5678/api/categories");
-const categories = await catApi.json(); // Changement de 'cat' à 'categories' pour plus de clarté
+const categories = await catApi.json();
 
-// Récupération des projets depuis l'API
-const worksAPI = await fetch("http://localhost:5678/api/works");
-const works = await worksAPI.json();
+// Fonction pour afficher les projets
+function displayProjects(works) {
+  const modalBody = document.querySelector("#modal-body");
+  
+  // Vérification que modalBody est bien trouvé
+  if (!modalBody) {
+    console.error("Élément modalBody introuvable !");
+    return;
+  }
+
+  // Vider l'élément modalBody avant de réafficher les projets
+  modalBody.innerHTML = "";
+
+  works.forEach((project) => {
+    const worksTile = document.createElement("figure");
+    worksTile.dataset.id = project.id;
+    worksTile.dataset.cat = project.categoryId;
+    worksTile.className = "modale-img";
+
+    worksTile.innerHTML = `
+      <div class="image-container" style="position: relative;">
+          <img src="${project.imageUrl}" alt="${project.title}" style="width: 100%; display: block;">
+          <i id="trash-${project.id}" type="button" class="fa-solid fa-trash-can trash-icon"></i>
+      </div>
+    `;
+    modalBody.appendChild(worksTile);
+
+    const trashIcon = worksTile.querySelector(`#trash-${project.id}`);
+    trashIcon.addEventListener("click", () => {
+      console.log(`Suppression du projet ID: ${project.id}`);
+
+      const tokenData = window.localStorage.getItem("userData");
+      if (!tokenData) {
+        console.error("Utilisateur non connecté.");
+        return;
+      }
+
+      const token = JSON.parse(tokenData).token;
+      const url = `http://localhost:5678/api/works/${project.id}`;
+
+      fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log(`Projet ID ${project.id} supprimé avec succès`);
+            refreshProjects(); // Rafraîchit la liste des projets
+          } else {
+            console.error("Erreur lors de la suppression :", response.status);
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    });
+  });
+}
 
 export function generateModal() {
-  // Création de l'overlay de la modale
   const modalOverlay = document.createElement("div");
   modalOverlay.className = "modal-overlay";
 
   const modal = document.createElement("div");
   modal.className = "modal";
 
-  // En-tête de la modale avec le titre centré
   const modalHeader = document.createElement("div");
   modalHeader.className = "modal-header";
   modalHeader.innerHTML = `
@@ -22,68 +76,10 @@ export function generateModal() {
       <span class="close-modal" style="cursor: pointer;">&times;</span>
     `;
 
-  // Corps de la modale
   const modalBody = document.createElement("div");
   modalBody.className = "modal-body";
   modalBody.id = "modal-body";
 
-  // Fonction pour afficher les projets
-  function displayProjects(works) {
-    works.forEach((project) => {
-      const worksTile = document.createElement("figure");
-      worksTile.dataset.id = project.id;
-      worksTile.dataset.cat = project.categoryId;
-      worksTile.className = "modale-img";
-
-      worksTile.innerHTML = `
-                <div class="image-container" style="position: relative;">
-                    <img src="${project.imageUrl}" alt="${project.title}" style="width: 100%; display: block;">
-                    <i id="trash-${project.id}" type="button" class="fa-solid fa-trash-can trash-icon"></i>
-                </div>
-            `;
-      modalBody.appendChild(worksTile);
-
-      // Ajout de l'event listener sur l'icône de la corbeille après la création de l'élément
-      const localStorage = window.localStorage.getItem("userData");
-      const trashIcon = worksTile.querySelector(`#trash-${project.id}`);
-      trashIcon.addEventListener("click", () => {
-        console.log(project.id);
-
-        const url = `http://localhost:5678/api/works/${project.id}`;
-        const token = JSON.parse(window.localStorage.getItem("userData")).token;
-
-        // Remove image
-        const requestInfos = {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            accept: "*/*",
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        fetch(url, requestInfos)
-          .then((response) => {
-            if (response.ok) {
-              console.log(
-                `Projet avec l'ID ${project.id} supprimé avec succès.`
-              );
-              // Supprimer l'élément du DOM après une suppression réussie
-              worksTile.remove();
-            } else {
-              throw new Error(`Http error: ${response.status}`);
-            }
-          })
-          .catch((error) => {
-            console.log("Error:", error);
-          });
-      });
-    });
-  }
-
-  // Appel de la fonction pour afficher les projets
-  displayProjects(works);
-
-  // Ajout des sections dans la modale
   modal.appendChild(modalHeader);
   modal.appendChild(modalBody);
   modalOverlay.appendChild(modal);
@@ -93,7 +89,6 @@ export function generateModal() {
   separator.className = "separator";
   modal.appendChild(separator);
 
-  // Création du conteneur pour le bouton "Ajouter une photo"
   const buttonContainer = document.createElement("div");
   buttonContainer.className = "button-container";
   const addImageButton = document.createElement("button");
@@ -102,25 +97,47 @@ export function generateModal() {
   buttonContainer.appendChild(addImageButton);
   modal.appendChild(buttonContainer);
 
-  // Ajoutez un écouteur d'événement pour ouvrir la modale d'ajout de photo
+  // Événement pour afficher la modale d'ajout
   addImageButton.addEventListener("click", () => {
-    modalAdd(); // Appelle la fonction pour afficher la modale d'ajout
+    modalAdd();
   });
 
-  // Événement pour fermer la modale via la croix
-  const closeModalBtn = modalHeader.querySelector(".close-modal");
-  console.log("test");
-  closeModalBtn.addEventListener("click", () => {
-    modalOverlay.remove(); // Ferme la modale
+  // Fermeture de la modale
+  modalHeader.querySelector(".close-modal").addEventListener("click", () => {
+    modalOverlay.remove();
   });
 
-  // Événement pour fermer la modale en cliquant sur l'overlay
   modalOverlay.addEventListener("click", (event) => {
     if (event.target === modalOverlay) {
-      modalOverlay.remove(); // Ferme la modale
+      modalOverlay.remove();
     }
   });
+
+  // Appel de refreshProjects pour charger les projets au premier affichage
+  refreshProjects();
 }
+
+async function refreshProjects() {
+  console.log("Rafraîchissement des projets...");
+
+  try {
+    const worksAPI = await fetch("http://localhost:5678/api/works");
+    if (!worksAPI.ok) {
+      throw new Error(`Erreur API: ${worksAPI.status}`);
+    }
+    const updatedWorks = await worksAPI.json();
+    console.log("Projets actualisés :", updatedWorks);
+    
+    // Affichage des projets actualisés
+    displayProjects(updatedWorks);
+  } catch (error) {
+    console.error("Erreur lors du rafraîchissement des projets :", error);
+  }
+}
+
+
+
+
 
 export async function modalAdd() {
   const modalOverlay = document.querySelector(".modal");
@@ -209,6 +226,7 @@ export async function modalAdd() {
         if (response.ok) {
           alert("projet ajouté avec succés");
           generateEditionMode();
+          await refreshProjects(); // Rafraîchit la liste des projets
         } else {
           alert("Le projet n'a pas pu être ajouté");
         }
