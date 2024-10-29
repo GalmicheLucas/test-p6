@@ -122,7 +122,7 @@ export function generateModal() {
   });
 }
 
-export function modalAdd() {
+export async function modalAdd() {
   const modalOverlay = document.querySelector(".modal");
 
   if (modalOverlay) {
@@ -135,7 +135,7 @@ export function modalAdd() {
       <h4 id="modale-title">Ajout photo</h4>
       </div>
 
-      <form id="form-ajout-photo" enctype="multipart/form-data" action="#" method="post"> 
+      <form id="form-ajout-photo" enctype="multipart/form-data" action="http://localhost:5678/api/works" method="post"> 
           <div id="upload-img-area"> 
               <div id="img-preview-area"> 
                   <img id="show-img-preview" style="display:none;">
@@ -143,7 +143,7 @@ export function modalAdd() {
               <div class="upload-section">
               <i class="fa-regular fa-image img"></i>
               <label for="upload-img-html" id="upload-img">Choisir une image</label>
-              <input type="file" id="upload-img-html" name="image">
+              <input type="file" id="upload-img-html" name="image" accept="image/*">
               <div class="img-size"><span >jpg, png : 4mo max</span></div>
           </div>
           <label for="titre">Titre</label>
@@ -167,6 +167,7 @@ export function modalAdd() {
     const formulaire = document.querySelector("#form-ajout-photo");
     if (formulaire) {
       formulaire.addEventListener("submit", async (e) => {
+
         e.preventDefault();
 
         const formData = new FormData();
@@ -177,7 +178,7 @@ export function modalAdd() {
           formData.append("image", fileInput.files[0]);
         } else {
           alert("Veuillez sélectionner une image.");
-          return; // Sortir si aucune image n'est sélectionnée
+          return;
         }
 
         // Récupération du titre et de la catégorie
@@ -186,39 +187,54 @@ export function modalAdd() {
           "category",
           document.querySelector("#modale-categorie-add").value
         );
+        console.log(formData);
 
-        try {
-          const token = JSON.parse(window.localStorage.getItem("userData")).token;
-          const response = await fetch("http://localhost:5678/api/works", {
-            method: "POST",
-            body: formData,
-            headers: {
-              Authorization: `Bearer ${token}`,
-              Accept: "application/json",
-            },
-          });
+        console.log(document.querySelector("#modale-categorie-add").value);
+        console.log(document.querySelector("#new-project").value);
+        console.log(document.querySelector("#modale-categorie-add").value);
 
-          if (response.ok) {
-            alert("Projet ajouté avec succès");
-            console.log("Réponse réussie : ", await response.json());
-            generateModal(); // Actualise la vue après ajout
-          } else {
-            console.error("Erreur lors de la requête POST : ", response.status);
-            alert("Le projet n'a pas pu être ajouté.");
+        const token = JSON.parse(window.localStorage.getItem("userData")).token;
+          console.log(token);
+
+
+        const response = await fetch("http://localhost:5678/api/works", {
+          method : "POST",
+          body : formData,
+          headers: {
+            Authorization:`Bearer ${token}`,
+            "accept": "application/json"
           }
-        } catch (error) {
-          console.error("Erreur lors de l'ajout du projet : ", error);
-          alert("Une erreur est survenue lors de l'ajout du projet.");
+        });
+
+        if (response.ok) {
+          alert("projet ajouté avec succés");
+          generateEditionMode();
+        } else {
+          alert("Le projet n'a pas pu être ajouté");
         }
+
+
+
+        //}
+
+        /*catch (error) {
+          // console.error("Erreur lors de l'ajout du projet : ", error);
+          // alert("Une erreur est survenue lors de l'ajout du projet.");
+        }*/
       });
-      
 
       const Modalclose = () =>
         document.querySelector(".modal-overlay").remove();
       document.querySelector("#closingX").addEventListener("click", Modalclose);
 
-    const Goback = () =>
-      document.querySelector("#modal-back").addEventListener("click", generateModal);
+      const Goback = document.querySelector("#modal-back");
+
+      Goback.addEventListener("click",() => {
+        document.querySelector(".modal-overlay").remove();
+        generateModal();
+      });
+
+
 
       // Vérification de la validité du formulaire pour activer le bouton Valider
       const fileInput = document.querySelector("#upload-img-html");
