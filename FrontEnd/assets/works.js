@@ -1,4 +1,4 @@
-//
+
 
 
 // works
@@ -65,6 +65,7 @@ export function generateProjects(projects) {
     projects.forEach(project => {
         const projectsGallery = document.querySelector(".gallery");
         const projectTile = document.createElement("figure");
+        projectTile.id = `work-${project.id}`;
         projectTile.dataset.id = project.id;
         projectTile.dataset.cat = project.categoryId;
 

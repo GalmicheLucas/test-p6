@@ -2,67 +2,16 @@
 const catApi = await fetch("http://localhost:5678/api/categories");
 const categories = await catApi.json();
 
+// Récupération des projets depuis l'API
+const worksAPI = await fetch("http://localhost:5678/api/works");
+const works = await worksAPI.json();
+console.log(works);
+
+
+
 // Fonction pour afficher les projets
-function displayProjects(works) {
-  const modalBody = document.querySelector("#modal-body");
-  
-  // Vérification que modalBody est bien trouvé
-  if (!modalBody) {
-    console.error("Élément modalBody introuvable !");
-    return;
-  }
 
-  // Vider l'élément modalBody avant de réafficher les projets
-  modalBody.innerHTML = "";
-
-  works.forEach((project) => {
-    const worksTile = document.createElement("figure");
-    worksTile.dataset.id = project.id;
-    worksTile.dataset.cat = project.categoryId;
-    worksTile.className = "modale-img";
-
-    worksTile.innerHTML = `
-      <div class="image-container" style="position: relative;">
-          <img src="${project.imageUrl}" alt="${project.title}" style="width: 100%; display: block;">
-          <i id="trash-${project.id}" type="button" class="fa-solid fa-trash-can trash-icon"></i>
-      </div>
-    `;
-    modalBody.appendChild(worksTile);
-
-    const trashIcon = worksTile.querySelector(`#trash-${project.id}`);
-    trashIcon.addEventListener("click", () => {
-      console.log(`Suppression du projet ID: ${project.id}`);
-
-      const tokenData = window.localStorage.getItem("userData");
-      if (!tokenData) {
-        console.error("Utilisateur non connecté.");
-        return;
-      }
-
-      const token = JSON.parse(tokenData).token;
-      const url = `http://localhost:5678/api/works/${project.id}`;
-
-      fetch(url, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log(`Projet ID ${project.id} supprimé avec succès`);
-            refreshProjects(); // Rafraîchit la liste des projets
-          } else {
-            console.error("Erreur lors de la suppression :", response.status);
-          }
-        })
-        .catch((error) => console.error("Error:", error));
-    });
-  });
-}
-
-export function generateModal() {
+export function generateModal(works) {
   const modalOverlay = document.createElement("div");
   modalOverlay.className = "modal-overlay";
 
@@ -113,28 +62,63 @@ export function generateModal() {
     }
   });
 
-  // Appel de refreshProjects pour charger les projets au premier affichage
-  refreshProjects();
+
+  // Vider l'élément modalBody avant de réafficher les projets
+  modalBody.innerHTML = "";
+  console.log(works);
+  works.forEach((project) => {
+    const worksTile = document.createElement("figure");
+    worksTile.dataset.id = project.id;
+    worksTile.dataset.cat = project.categoryId;
+    worksTile.className = "modale-img";
+
+    worksTile.innerHTML = `
+      <div class="image-container" style="position: relative;">
+          <img src="${project.imageUrl}" alt="${project.title}" style="width: 100%; display: block;">
+          <i id="trash-${project.id}" type="button" class="fa-solid fa-trash-can trash-icon"></i>
+      </div>
+    `;
+    modalBody.appendChild(worksTile);
+
+    const trashIcon = worksTile.querySelector(`#trash-${project.id}`);
+    trashIcon.addEventListener("click", () => {
+      console.log(`Suppression du projet ID: ${project.id}`);
+
+      const tokenData = window.localStorage.getItem("userData");
+      if (!tokenData) {
+        console.error("Utilisateur non connecté.");
+        return;
+      }
+
+      const token = JSON.parse(tokenData).token;
+      const url = `http://localhost:5678/api/works/${project.id}`;
+
+      fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+          .then((response) => {
+            if (response.ok) {
+              console.log(`Projet ID ${project.id} supprimé avec succès`);
+              //supprimer projet dans modal
+              worksTile.remove();
+              // Supprimer projet dans la liste des projets
+              document.querySelector(`.gallery #work-${project.id}`).remove();
+
+
+
+            } else {
+              console.error("Erreur lors de la suppression :", response.status);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+    });
+  });
+
 }
-
-async function refreshProjects() {
-  console.log("Rafraîchissement des projets...");
-
-  try {
-    const worksAPI = await fetch("http://localhost:5678/api/works");
-    if (!worksAPI.ok) {
-      throw new Error(`Erreur API: ${worksAPI.status}`);
-    }
-    const updatedWorks = await worksAPI.json();
-    console.log("Projets actualisés :", updatedWorks);
-    
-    // Affichage des projets actualisés
-    displayProjects(updatedWorks);
-  } catch (error) {
-    console.error("Erreur lors du rafraîchissement des projets :", error);
-  }
-}
-
 
 
 
@@ -222,23 +206,34 @@ export async function modalAdd() {
             "accept": "application/json"
           }
         });
-
+        const data = await response.json();
+        console.log(data);
         if (response.ok) {
           alert("projet ajouté avec succés");
-          generateEditionMode();
-          await refreshProjects(); // Rafraîchit la liste des projets
+         //ajout projet dans la modal
+
+         //ajout projet dans la liste de projet
+        let figure = document.createElement("figure");
+        figure.id = `work-${data.id}`;
+        let image = document.createElement("img");
+        image.src = data.imageUrl;
+        let figureCaption = document.createElement("figcaption");
+        figureCaption.innerHTML = data.title;
+
+        figure.appendChild(image);
+        figure.appendChild(figureCaption);
+
+        const gallery = document.querySelector(".gallery");
+        gallery.appendChild(figure);
         } else {
           alert("Le projet n'a pas pu être ajouté");
         }
 
 
 
-        //}
+        
 
-        /*catch (error) {
-          // console.error("Erreur lors de l'ajout du projet : ", error);
-          // alert("Une erreur est survenue lors de l'ajout du projet.");
-        }*/
+       
       });
 
       const Modalclose = () =>
@@ -249,7 +244,7 @@ export async function modalAdd() {
 
       Goback.addEventListener("click",() => {
         document.querySelector(".modal-overlay").remove();
-        generateModal();
+        gobackfunction();
       });
 
 
@@ -308,4 +303,10 @@ export async function modalAdd() {
       titleInput.addEventListener("input", checkFormValidity);
     }
   }
+}
+
+async function gobackfunction() {
+  const worksAPI = await fetch("http://localhost:5678/api/works");
+const works = await worksAPI.json();
+generateModal(works);
 }

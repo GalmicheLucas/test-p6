@@ -44,9 +44,7 @@ form.addEventListener("submit", async (event) => { // Attache un gestionnaire d'
       const userToken = data.token; 
       //  informations dans sessionStorage
       window.localStorage.setItem('userData', JSON.stringify(data));
-    //    window.localStorage.setItem("token", userToken); // Stocke le token dans sessionStorage
-    //    window.localStorage.setItem("userId", userId); // Stocke l'identifiant de l'utilisateur dans sessionStorage
-
+   
       // Redirige vers index.html
       location.href = "index.html"; 
   })
