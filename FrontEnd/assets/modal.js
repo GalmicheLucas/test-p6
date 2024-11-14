@@ -199,11 +199,12 @@ export async function modalAdd() {
         if (response.ok) {
           alert("projet ajouté avec succés");
           //ajout projet dans la modal
-          document.querySelector(".modal-overlay").style.display = "none";
+          document.querySelector(".modal").style.display = "none";
+          document.querySelector(".modal-overlay").style.background = "none";
           //ajout projet dans la liste de projet
-           let figure = document.createElement("figure");
-           figure.id = `work-${data.id}`;
-           let image = document.createElement("img");
+          let figure = document.createElement("figure");
+          figure.id = `work-${data.id}`;
+          let image = document.createElement("img");
           image.src = data.imageUrl;
           let figureCaption = document.createElement("figcaption");
           figureCaption.innerHTML = data.title;
@@ -213,7 +214,6 @@ export async function modalAdd() {
 
           const gallery = document.querySelector(".gallery");
           gallery.appendChild(figure);
-          
         } else {
           alert("Le projet n'a pas pu être ajouté");
         }
