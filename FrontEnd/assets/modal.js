@@ -1,4 +1,4 @@
-// Récupération des catégories depuis l'API 
+// Récupération des catégories depuis l'API
 const catApi = await fetch("http://localhost:5678/api/categories");
 const categories = await catApi.json();
 
@@ -6,8 +6,6 @@ const categories = await catApi.json();
 const worksAPI = await fetch("http://localhost:5678/api/works");
 const works = await worksAPI.json();
 console.log(works);
-
-
 
 // Fonction pour afficher les projets
 
@@ -62,7 +60,6 @@ export function generateModal(works) {
     }
   });
 
-
   // Vider l'élément modalBody avant de réafficher les projets
   modalBody.innerHTML = "";
   console.log(works);
@@ -100,28 +97,21 @@ export function generateModal(works) {
           Authorization: `Bearer ${token}`,
         },
       })
-          .then((response) => {
-            if (response.ok) {
-              console.log(`Projet ID ${project.id} supprimé avec succès`);
-              //supprimer projet dans modal
-              worksTile.remove();
-              // Supprimer projet dans la liste des projets
-              document.querySelector(`.gallery #work-${project.id}`).remove();
-
-
-
-            } else {
-              console.error("Erreur lors de la suppression :", response.status);
-            }
-          })
-          .catch((error) => console.error("Error:", error));
+        .then((response) => {
+          if (response.ok) {
+            console.log(`Projet ID ${project.id} supprimé avec succès`);
+            //supprimer projet dans modal
+            worksTile.remove();
+            // Supprimer projet dans la liste des projets
+            document.querySelector(`.gallery #work-${project.id}`).remove();
+          } else {
+            console.error("Erreur lors de la suppression :", response.status);
+          }
+        })
+        .catch((error) => console.error("Error:", error));
     });
   });
-
 }
-
-
-
 
 export async function modalAdd() {
   const modalOverlay = document.querySelector(".modal");
@@ -168,7 +158,6 @@ export async function modalAdd() {
     const formulaire = document.querySelector("#form-ajout-photo");
     if (formulaire) {
       formulaire.addEventListener("submit", async (e) => {
-
         e.preventDefault();
 
         const formData = new FormData();
@@ -195,45 +184,39 @@ export async function modalAdd() {
         console.log(document.querySelector("#modale-categorie-add").value);
 
         const token = JSON.parse(window.localStorage.getItem("userData")).token;
-          console.log(token);
-
+        console.log(token);
 
         const response = await fetch("http://localhost:5678/api/works", {
-          method : "POST",
-          body : formData,
+          method: "POST",
+          body: formData,
           headers: {
-            Authorization:`Bearer ${token}`,
-            "accept": "application/json"
-          }
+            Authorization: `Bearer ${token}`,
+            accept: "application/json",
+          },
         });
         const data = await response.json();
         console.log(data);
         if (response.ok) {
           alert("projet ajouté avec succés");
-         //ajout projet dans la modal
+          //ajout projet dans la modal
+          document.querySelector(".modal-overlay").style.display = "none";
+          //ajout projet dans la liste de projet
+           let figure = document.createElement("figure");
+           figure.id = `work-${data.id}`;
+           let image = document.createElement("img");
+          image.src = data.imageUrl;
+          let figureCaption = document.createElement("figcaption");
+          figureCaption.innerHTML = data.title;
 
-         //ajout projet dans la liste de projet
-        let figure = document.createElement("figure");
-        figure.id = `work-${data.id}`;
-        let image = document.createElement("img");
-        image.src = data.imageUrl;
-        let figureCaption = document.createElement("figcaption");
-        figureCaption.innerHTML = data.title;
+          figure.appendChild(image);
+          figure.appendChild(figureCaption);
 
-        figure.appendChild(image);
-        figure.appendChild(figureCaption);
-
-        const gallery = document.querySelector(".gallery");
-        gallery.appendChild(figure);
+          const gallery = document.querySelector(".gallery");
+          gallery.appendChild(figure);
+          
         } else {
           alert("Le projet n'a pas pu être ajouté");
         }
-
-
-
-        
-
-       
       });
 
       const Modalclose = () =>
@@ -242,12 +225,10 @@ export async function modalAdd() {
 
       const Goback = document.querySelector("#modal-back");
 
-      Goback.addEventListener("click",() => {
+      Goback.addEventListener("click", () => {
         document.querySelector(".modal-overlay").remove();
         gobackfunction();
       });
-
-
 
       // Vérification de la validité du formulaire pour activer le bouton Valider
       const fileInput = document.querySelector("#upload-img-html");
@@ -271,7 +252,6 @@ export async function modalAdd() {
           reader.readAsDataURL(file); // Lire le fichier comme URL de données
         }
       }
-      
 
       /// Fonction pour vérifier la validité du formulaire
       function checkFormValidity() {
@@ -280,9 +260,9 @@ export async function modalAdd() {
           fileInput.files.length > 0 &&
           titleInput.value.trim() !== "" &&
           categorySelect.value.trim() !== "";
-      
+
         console.log("Formulaire valide : ", isFormValid); // Vérification de la validité du formulaire
-      
+
         if (isFormValid) {
           validateButton.classList.add("active");
           validateButton.disabled = false;
@@ -291,7 +271,6 @@ export async function modalAdd() {
           validateButton.disabled = true;
         }
       }
-      
 
       // Ajouter un écouteur d'événement sur la sélection de la catégorie
       const categorySelect = document.querySelector("#modale-categorie-add");
@@ -307,6 +286,6 @@ export async function modalAdd() {
 
 async function gobackfunction() {
   const worksAPI = await fetch("http://localhost:5678/api/works");
-const works = await worksAPI.json();
-generateModal(works);
+  const works = await worksAPI.json();
+  generateModal(works);
 }

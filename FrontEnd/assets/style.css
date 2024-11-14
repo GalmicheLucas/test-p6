@@ -566,6 +566,10 @@ margin: auto;
    
 }
 
+ .hidden {
+	display: none !important;
+}
+
 .upload-section:hover {
     background-color: #e0e0e0;
 }
@@ -583,6 +587,8 @@ margin: auto;
     margin-top: 10px;
     cursor: pointer;
 }
+
+
 
 .img-size span {
     display: block;
