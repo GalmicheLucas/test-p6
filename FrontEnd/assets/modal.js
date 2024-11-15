@@ -200,7 +200,7 @@ export async function modalAdd() {
           alert("projet ajouté avec succés");
           //ajout projet dans la modal
           document.querySelector(".modal").style.display = "none";
-          document.querySelector(".modal-overlay").style.background = "none";
+          document.querySelector(".modal-overlay").style.background = "none"
           //ajout projet dans la liste de projet
           let figure = document.createElement("figure");
           figure.id = `work-${data.id}`;

@@ -1,17 +1,28 @@
 import { generateProjectsHead, generateProjects } from "./works.js"; 
 import { generateModal, modalAdd } from "./modal.js";
 
-// Récupération des données de l'API pour les projets
-const projectsAPI = await fetch("http://localhost:5678/api/works");
-const projects = await projectsAPI.json();
+// Récupération des données de l'API pour les projets avec gestion des erreurs
+async function fetchProjects() {
+  try {
+    const projectsAPI = await fetch("http://localhost:5678/api/works");
+    if (!projectsAPI.ok) {
+      throw new Error("Erreur de récupération des projets");
+    }
+    return await projectsAPI.json();
+  } catch (error) {
+    console.error("Erreur lors de la récupération des projets:", error);
+    return []; // Retourne un tableau vide en cas d'erreur
+  }
+}
 
 // Sélection de la zone HTML principale
 const main = document.querySelector("main");
 
 // Fonction principale pour générer la page en mode déconnecté par défaut
-function generateMainPage() {
+async function generateMainPage() {
   generateIntroduction();
   generateProjectsHead();
+  const projects = await fetchProjects();
   generateProjects(projects);
   generateContactForm();
 }
@@ -31,11 +42,18 @@ if (userData) {
   document.body.prepend(editBanner);
 
   // Événement pour ouvrir la modale en mode édition
-  editBanner.addEventListener("click",  async() =>  {
-    const worksAPI = await fetch("http://localhost:5678/api/works");
-const works = await worksAPI.json();
-console.log(works);
-    generateModal(works);
+  editBanner.addEventListener("click", async () => {
+    try {
+      const worksAPI = await fetch("http://localhost:5678/api/works");
+      if (!worksAPI.ok) {
+        throw new Error("Erreur lors de la récupération des données des travaux");
+      }
+      const works = await worksAPI.json();
+      console.log(works);
+      generateModal(works);
+    } catch (error) {
+      console.error("Erreur lors de l'ouverture de la modale:", error);
+    }
   });
 
   // Cacher le filtre pour les utilisateurs connectés
@@ -81,10 +99,17 @@ console.log(works);
 
   // Activer le bouton "modifier" pour ouvrir la modale
   const editButton = document.querySelector("#edit-projects-button");
-  editButton.addEventListener("click",  async() =>  {
-    const worksAPI = await fetch("http://localhost:5678/api/works");
-const works = await worksAPI.json();
-generateModal(works);
+  editButton.addEventListener("click", async () => {
+    try {
+      const worksAPI = await fetch("http://localhost:5678/api/works");
+      if (!worksAPI.ok) {
+        throw new Error("Erreur lors de la récupération des données des travaux");
+      }
+      const works = await worksAPI.json();
+      generateModal(works);
+    } catch (error) {
+      console.error("Erreur lors de l'ouverture de la modale:", error);
+    }
   });
 
 } else {
@@ -104,8 +129,8 @@ function generateIntroduction() {
   article.innerHTML = `
     <h2>Designer d'espace</h2>
     <p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison finale du chantier.</p>
-					<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
-					<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG, décorateur(trice).</p>`;
+    <p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
+    <p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG, décorateur(trice).</p>`;
 
   figure.appendChild(img);
   introSection.appendChild(figure);
